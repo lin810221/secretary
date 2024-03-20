@@ -8,12 +8,13 @@ import datetime
 import yfinance as yf
 import matplotlib.pyplot as plt
 import pyimgur
-import mpl_finance as mpf
+#import mpl_finance as mpf
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 
 " 運用 yfinance 做股市K線圖 "
 def sendMulti(event, mtext):
+  '''
     stock_number = mtext.split(" ")[1]
     start = (datetime.datetime.now() +
              datetime.timedelta(days=-30)).strftime("%Y-%m-%d")
@@ -82,4 +83,4 @@ def sendMulti(event, mtext):
         line_bot_api.reply_message(event.reply_token,message)
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
-
+'''
