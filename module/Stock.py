@@ -76,7 +76,7 @@ def sendMulti(event, backdata):
     try:
         message = [
             TextSendMessage(  #傳送y文字
-                text = content
+                text = '看屁看'
             ),
             ImageSendMessage(  #傳送圖片
                 original_content_url = img_url,
