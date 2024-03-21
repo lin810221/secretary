@@ -4,8 +4,8 @@ from linebot import LineBotApi
 from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessage,
                             LocationSendMessage, QuickReply, QuickReplyButton, 
                             MessageAction)
-
-
+from io import BytesIO
+import base64
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
@@ -25,7 +25,7 @@ def sendMulti(event, backdata):
     stock_json = res.json()
     Title = stock_json['title']
     stock_df = pd.DataFrame.from_dict(stock_json['data'])
-    df = df.append(stock_df, ignore_index=True)
+    df = pd.concat([df, stock_df], ignore_index=True)
     df.columns = stock_json['fields']
     
     ind = ['發行量加權股價指數',
