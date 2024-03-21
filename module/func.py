@@ -151,25 +151,6 @@ def sendCarousel(event):  #轉盤樣板
             alt_text='轉盤起動囉',
             template=CarouselTemplate(
                 columns=[
-                    CarouselColumn(  # 指數、資金
-                        thumbnail_image_url = 'https://i.imgur.com/AcKdYwc.jpg',
-                        title = '股市指數資訊',
-                        text = '加權、電子、半導體、航運、鋼鐵指數，以及資訊走向',
-                        actions = [
-                            PostbackTemplateAction(
-                                label = '加權指數',
-                                data='action=加權指數'
-                            ),
-                            PostbackTemplateAction(
-                                label='各類指數',
-                                data='action=各類指數'
-                            ),
-                            PostbackTemplateAction(
-                                label = '資金走向',
-                                data='action=資金走向'
-                            ),
-                        ]
-                    ),
                     CarouselColumn(  # 台灣水庫即時水情
                         thumbnail_image_url = 'https://static.vecteezy.com/system/resources/previews/000/119/586/original/free-effervescent-background-vector.jpg',
                         title = '台灣水庫即時水情',
