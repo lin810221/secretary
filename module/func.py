@@ -15,7 +15,6 @@ from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessag
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 import requests, datetime, statistics, time, pyimgur
 from lxml import etree
-from module import StockTest
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
