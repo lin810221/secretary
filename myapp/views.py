@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, PostbackEvent
-from module import func, Stock, LIFF
+from module import func, LIFF
 from urllib.parse import parse_qsl
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -61,30 +61,19 @@ def callback(request):
                 #取得Postback資料
                 backdata = dict(parse_qsl(event.postback.data))
                 
+                # 練習
                 if backdata.get ('action') == 'buy':
-                    func.sendBack_buy (event, backdata) 
-
-                elif backdata.get ('action') == '加權指數':
-                    Stock.sendMulti (event, backdata)
-
-                elif backdata.get ('action') == '各類指數':
-                    Stock.sendMulti_1 (event, backdata)
+                    func.sendBack_buy (event, backdata)
                 
-                elif backdata.get ('action') == '資金走向':
-                    Stock.sendMulti_2 (event, backdata)
-
-                elif backdata.get('action') == 'sell': # 練習
+                elif backdata.get('action') == 'sell':
                     func.sendData_sell(event, backdata)
-                
+
                 elif backdata.get('action') == '即時水情':
                     func.Waters(event)
                 
                 elif backdata.get('action') == '空氣品質指標':
                     func.AQI_char(event)
-                
-                elif backdata.get('action') == '中油油價歷史資訊':
-                    func.Oil(event)
-                
+
                 elif backdata.get('action') == '國際原油價格':
                     func.NationalOil(event)
 

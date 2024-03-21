@@ -1,17 +1,12 @@
 from django.conf import settings
-
 from linebot import LineBotApi
-from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessage,
-                            LocationSendMessage, QuickReply, QuickReplyButton, 
-                            MessageAction)
+from linebot.models import TextSendMessage, ImageSendMessage
 from io import BytesIO
 import base64
 import pandas as pd
-
 import matplotlib.pyplot as plt
 import requests
 import pyimgur
-import json
 from lxml import etree
 import numpy as np
 
@@ -23,7 +18,6 @@ def sendMulti(event, backdata):
     url = "https://www.twse.com.tw/exchangeReport/MI_5MINS_INDEX?response=json&date=&_=" 
     res = requests.get(url)
     stock_json = res.json()
-    Title = stock_json['title']
     stock_df = pd.DataFrame.from_dict(stock_json['data'])
     df = pd.concat([df, stock_df], ignore_index=True)
     df.columns = stock_json['fields']

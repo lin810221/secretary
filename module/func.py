@@ -13,70 +13,8 @@ from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessag
                             )
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
-import requests, datetime, statistics, time, pyimgur
+import requests, datetime, statistics, time
 from lxml import etree
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-
-" Covid-19 "
-def Covid19(event): 
-    " 輸入網址 "
-    url = "https://covid-19.nchc.org.tw/"
-    
-    " 模擬瀏覽器 "
-    headers = {"user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"}
-    
-    " 取得網頁回應 "
-    response = requests.get(url, verify=False)
-    #time.sleep(7)
-    
-    " 讀取網頁程式碼 "
-    html_str = response.content.decode()
-    
-    " 解析處理requests取得的數據 "
-    html = etree.HTML(html_str)
-    
-    " 擷取網站標題 "
-    Title = html.xpath("//h3/text()")
-    
-    " 擷取網站病情數據 "
-    Data = html.xpath("//h1/text()")
-    Data1 = html.xpath("//p/span/small/text()")
-    
-    " 確診、死亡、解除隔離、疫苗接種 "
-    A = Data[0]   # 累積確診
-    B = Data[1]   # 新增確診
-    C = Data[2]   # 累計死亡
-    D = Data[3]   # 疫苗接種
-    E = Data1[1].split(" ")[1]  # 本土新增
-    Dead = html.xpath("//p/span/text()")    # 新增死亡
-    
-    " 更新時間 "
-    Updat_Time = html.xpath("//section[1]/div[1]/div/div/div/p/span[3]/text()")
-    Updat_Time = Updat_Time[0].split()
-    Updat_Time = ' '.join(Updat_Time)
-    
-    " 訊息總整理 "
-    content = (Title[0] + 
-       "\n本土新增：" + E +        
-       "\n新增確診：" + B +
-       "\n累計確診：" + A + 
-       "\n新增死亡：" + Dead[4] +
-       "\n累計死亡：" + C +  
-       "\n疫苗接種：" + D + "\n" +
-       Updat_Time
-       )
-
-    try:
-        message = TextSendMessage(  
-            text = content
-        )
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
-
 
 " 水庫即時水情 "
 def Waters(event): 
@@ -106,8 +44,6 @@ def Waters(event):
 " AQI圖表 "
 def AQI_char(event): 
     # 資料參考：https://airtw.epa.gov.tw/ModelSimulate/20220529/output_AQI_20220529150000.png
-    time_stamp = time.time() # 設定timeStamp
-    struct_time = time.localtime(time_stamp) # 轉成時間元組
     timeString = time.strftime("%Y-%m-%d %H:%M:%S") # 轉成字串
     t = time.strftime("%Y%m%d%H")
     t ='https://airtw.epa.gov.tw/ModelSimulate/' + t[:8] + '/output_AQI_' + t + '0000.png'
@@ -177,85 +113,6 @@ def AQI(event):
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
-" 油價相關資訊 "
-def Oil(event): 
-    url = 'https://toolboxtw.com/zh-TW/detector/gasoline_price'
-    response = requests.get(url, verify=False)
-    html_str = response.content.decode()
-    html = etree.HTML(html_str)
-
-    title = html.xpath('//*[@id="content"]/div/div/div[2]/div[5]/table/thead/tr/th/text()')
-    date = html.xpath('//table[@class="table table-bordered table-hover price_table"]/tbody/tr/th/text()')
-    data = html.xpath('//table[@class="table table-bordered table-hover price_table"]/tbody/tr/td/text()')
-
-    a = np.array(data)
-    col = 4
-    row = int(len(a) / col)
-    data = a.reshape((row, col))
-
-    for i in range(row):
-        for j in range(col):
-            data[i][j] = data[i][j].split('元')[0]
-            
-    plt.rcParams['font.sans-serif'] = 'SimHei'
-    df = pd.DataFrame(data)
-    df.index = date
-    #df.columns = title[1:]
-    df.columns = ['92 無鉛', '95 無鉛', '98 無鉛', '超級柴油']
-
-    df = df.astype(float)
-
-    df = df.sort_index(level=title[1], ascending=True)
-    
-    df.plot.line(linestyle = '--', grid = True)
-    
-    content = ('【最新調價日期】：' + str(df.index[0]) + 
-               '\n  92無鉛：' + str(df.iloc[0, 0]) + 
-               '\n  95無鉛：' + str(df.iloc[0, 1]) + 
-               '\n  98無鉛：' + str(df.iloc[0, 2]) + 
-               '\n  超級柴油：' + str(df.iloc[0, 3]))
-    
-    '圖片上傳至imgur'
-    plt.savefig('send-1.png')
-    CLIENT_ID = "fa7ce9e1978a941"
-    PATH = "send-1.png"
-    im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur")
-    img_url_1 = uploaded_image.link
-    
-    df.plot.line(subplots=True)
-    #plt.plot(df[list(df)[0]])
-    
-    '圖片上傳至imgur'
-    plt.savefig('send-2.png')
-    CLIENT_ID = "fa7ce9e1978a941"
-    PATH = "send-2.png"
-    im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur")
-    img_url_2 = uploaded_image.link
-
-    try:
-        message = [
-            TextSendMessage(  #傳送文字
-                text = content
-            ),            
-            TextSendMessage(  #傳送文字
-                text = '中油油價歷史資訊'
-            ),
-            ImageSendMessage(  #傳送圖片
-                original_content_url = img_url_1,
-                preview_image_url = img_url_1
-            ),
-            ImageSendMessage(  #傳送圖片
-                original_content_url = img_url_2,
-                preview_image_url = img_url_2
-            )
-        ]
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
-
-
 
 "國際原油價格"
 def NationalOil(event): 
@@ -269,7 +126,6 @@ def NationalOil(event):
     title = html.xpath('//*[@id="content"]/div/div/div[2]/div[4]/table/thead/tr/th/text()')
 
     data = html.xpath('//*[@id="content"]/div/div/div[2]/div[4]/table/tbody/tr/td/text()')
-
 
     content = (T[0] + '\n  ' + 
                title[1] + '：' + data[0] + '\n  ' +
@@ -360,39 +216,6 @@ def sendCarousel(event):  #轉盤樣板
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
-" 聯合新聞網 "
-def udn_news(event, x):
-    url = "https://udn.com/news/index"
-    response = requests.get(url)
-    
-    html_str = response.content.decode()
-    html = etree.HTML(html_str)
-    
-    # 及時新聞
-    Con1 = html.xpath("//div[1]/div/a/span[2]/text()")
-    Web1 = html.xpath("//div[7]/div[1]/div/a/@href")
-    # 熱門新聞
-    Con2 = html.xpath("//div[2]/div/a/span[2]/text()")
-    Web2 = html.xpath("//section[3]/div[7]/div[2]/div/a/@href")
-    
-    if x == 0:        
-        content = ""
-        for i in range(len(Con1)):
-            content += Con1[i] + "\n"
-            content += Web1[i] + "\n" 
-    else:
-        content = ""
-        for i in range(len(Con1)):
-            content += Con2[i] + "\n"
-            content += Web2[i] + "\n" 
-
-    try:
-        message = TextSendMessage(  
-            text = content
-        )
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
 " 購買 觸發 "
 def sendBack_buy (event, backdata):  #處理Postback
@@ -406,28 +229,10 @@ def sendBack_buy (event, backdata):  #處理Postback
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
-" 查詢股票指令教學 (目前無使用) "
-def sendBack_StockText (event, backdata):  #處理Postback
-    try:
-        text1 = '查詢股市 = 股市 XXXX.YY'
-        text1 += '\nXXXX為股市代碼'
-        text1 += '\nYY為分類 (上市、上櫃)'
-        text1 += '\n上市為TW'
-        text1 += '\n上櫃為TWO'
-        text1 += '\n例如：股市 2330.TW'
-        text1 += '\n\n另外指數通常為 <^代號>'
-        text1 += '\n例如道瓊指：股市 ^DJI'        
-        message = TextSendMessage(  #傳送文字
-            text = text1
-        )
-        line_bot_api.reply_message(event.reply_token, message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
 " 一般功能按鍵 "
 def sendQuickreply (event):  
     try:
-
         message = TextSendMessage(
             text='請選擇功能',
             quick_reply=QuickReply(
