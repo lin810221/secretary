@@ -41,9 +41,6 @@ def callback(request):
                     elif mtext == "@COVID19":
                         func.Covid19(event)
 
-                    #elif (mtext.split(' ')[0] == "股市") and (len(mtext.split(' ')) == 2):
-                        #StockTest.sendMulti(event, mtext)
-
                     elif mtext == 'B': # 練習
                         func.sendImgCarousel(event)
 
@@ -59,24 +56,13 @@ def callback(request):
                     elif mtext == '@contact':
                         LIFF.contact(event)
                     
-                    
-
-
-					
-
-            if isinstance(event, PostbackEvent):  #PostbackTemplateAction觸發此事件
-                backdata = dict(parse_qsl(event.postback.data))  #取得Postback資料
-                if backdata.get ('action') == 'covid19':
-                    func.Covid19 (event)
-
-                elif backdata.get('action') == 'covid19-land':
-                    func.Covid19_land(event)
+            #PostbackTemplateAction觸發此事件
+            if isinstance(event, PostbackEvent):
+                #取得Postback資料
+                backdata = dict(parse_qsl(event.postback.data))
                 
-                elif backdata.get ('action') == 'buy':
+                if backdata.get ('action') == 'buy':
                     func.sendBack_buy (event, backdata) 
-
-                #elif (backdata.get ('action') == '股市 ^TWII') or (backdata.get ('action') == '股市 ^DJI'):
-                 #   StockTest.sendMulti(event, backdata.get('action')) 
 
                 elif backdata.get ('action') == '加權指數':
                     Stock.sendMulti (event, backdata)
@@ -90,18 +76,8 @@ def callback(request):
                 elif backdata.get('action') == 'sell': # 練習
                     func.sendData_sell(event, backdata)
                 
-                elif backdata.get('action') in ["及時新聞", "熱門新聞"]:
-                    x = ["及時新聞", "熱門新聞"].index(backdata.get('action'))
-                    func.udn_news (event, x)
-                
                 elif backdata.get('action') == '即時水情':
                     func.Waters(event)
-                
-                elif backdata.get('action') == "天氣預報":
-                    func.Weathers(event)
-
-                elif backdata.get('action') == "天氣雷達與溫度分布":
-                    func.WeathersRadar(event)
                 
                 elif backdata.get('action') == '空氣品質指標':
                     func.AQI_char(event)

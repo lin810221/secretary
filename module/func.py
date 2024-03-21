@@ -77,50 +77,6 @@ def Covid19(event):
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
-" Covid19 - 地區數據 "
-def Covid19_land(event):
-    " 輸入網址 "
-    url = "https://covid-19.nchc.org.tw/"
-    
-    " 模擬瀏覽器 "
-    headers = {"user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"}
-    
-    " 取得網頁回應 "
-    response = requests.get(url, verify=False)
-    #time.sleep(7)
-    
-    " 讀取網頁程式碼 "
-    html_str = response.content.decode()
-    
-    " 解析處理requests取得的數據 "
-    html = etree.HTML(html_str)
-    
-    " 擷取網站標題 "
-    Title = html.xpath("//h3/text()")
-    
-    " 更新時間 "
-    Updat_Time = html.xpath("//section[1]/div[1]/div/div/div/p/span[3]/text()")
-    Updat_Time = Updat_Time[0].split()
-    Updat_Time = ' '.join(Updat_Time)
-    
-    " 地區資料處理 "
-    land = html.xpath("//a/span[@style=\"font-size: 1em;\"]/text()")
-    land_1 = html.xpath("//a//span[@style=\"font-size: 1.0em;\"]/text()")
-    
-    table = dict(zip(land, land_1))
-    context = Title[1] + "\n"
-    for i in range(len(land_1)):
-        if land_1[i] != '\xa0':
-            context += land[i].split(" ")[0] + ":" + land_1[i].split()[0] + "\n"
-    context = (context + Updat_Time)   
-    try:
-        message = TextSendMessage(  
-            text = context
-        )
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
-
 
 " 水庫即時水情 "
 def Waters(event): 
@@ -145,66 +101,7 @@ def Waters(event):
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
-" 天氣資訊 "
-def Weathers(event): 
-    content = ''
-    url = 'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=CWB-8A0972E4-E510-4619-8762-191D601E832D&downloadType=WEB&format=JSON'
-    response = requests.get(url)
-    data = response.json()
-    location = data['cwbopendata']['dataset']['location']
-    for i in location:
-        city = i['locationName']    # 縣市名稱
-        wx8 = i['weatherElement'][0]['time'][0]['parameter']['parameterName']    # 天氣現象
-        maxt8 = i['weatherElement'][1]['time'][0]['parameter']['parameterName']  # 最低溫
-        mint8 = i['weatherElement'][2]['time'][0]['parameter']['parameterName']  # 最高溫
-        ci8 = i['weatherElement'][2]['time'][0]['parameter']['parameterName']    # 舒適度
-        pop8 = i['weatherElement'][2]['time'][0]['parameter']['parameterName']   # 降雨機率
-        content += f'{city}未來 8 小時{wx8}，最高溫 {maxt8} 度，最低溫 {mint8} 度，降雨機率 {pop8} %\n\n'
 
-
-    try:
-        message = TextSendMessage(  
-            text = content
-        )
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
-
-" 天氣雷達與溫度分布 "
-def WeathersRadar(event): 
-    "天氣雷達"
-    radar_url = 'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=rdec-key-123-45678-011121314&format=JSON'
-    radar = requests.get(radar_url)        # 爬取資料
-    radar_json = radar.json()              # 使用 JSON 格式
-    radar_img = radar_json['cwbopendata']['dataset']['resource']['uri']  # 取得圖片網址
-
-    "溫度分布"
-    timeString = time.strftime("%Y-%m-%d %H:%M:%S") # 轉成字串
-    t1 = time.strftime("%Y-%m-%d")
-    t2 = time.strftime("%H")
-    t = 'https://www.cwb.gov.tw/Data/temperature/' + t1 + '_' + t2 + '00.GTP8w.jpg'
-    text = '溫度分布圖\n' + timeString
-
-    try:
-        message = [
-            TextSendMessage(  #傳送文字
-                '雷達合成回波圖\n' + timeString
-            ),
-            ImageSendMessage(  #傳送圖片
-                original_content_url = radar_img,
-                preview_image_url = radar_img
-                ),
-            TextSendMessage(  #傳送文字
-                text
-            ),
-            ImageSendMessage(  #傳送圖片
-                original_content_url = t,
-                preview_image_url = t
-                )
-        ]
-        line_bot_api.reply_message(event.reply_token,message)
-    except:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
 
 " AQI圖表 "
 def AQI_char(event): 
@@ -398,25 +295,6 @@ def sendCarousel(event):  #轉盤樣板
             alt_text='轉盤起動囉',
             template=CarouselTemplate(
                 columns=[
-                    CarouselColumn(  # Covid-19
-                        thumbnail_image_url='https://i.imgur.com/Pzt0EJ7.jpeg',
-                        title = 'COVID-19',
-                        text = '每天鎖定下午2點更新最新資訊',
-                        actions = [
-                            PostbackTemplateAction(
-                                label = '最新資訊',
-                                data = 'action=covid19'
-                            ),
-                            PostbackTemplateAction(
-                                label = '病例分佈',
-                                data = 'action=covid19-land'
-                            ),
-                            URITemplateAction(
-                                label = '資料來源',
-                                uri='https://covid-19.nchc.org.tw/'
-                            )
-                        ]
-                    ),
                     CarouselColumn(  # 指數、資金
                         thumbnail_image_url = 'https://i.imgur.com/AcKdYwc.jpg',
                         title = '股市指數資訊',
@@ -446,31 +324,12 @@ def sendCarousel(event):  #轉盤樣板
                                 data='action=即時水情'
                             ),
                             PostbackTemplateAction(
-                                label = '未開發',
-                                data='action=NA'
-                            ),
-                            PostbackTemplateAction(
-                                label = '未開發',
-                                data='action=NA'
-                            ),
-                        ]
-                    ),
-                    CarouselColumn(  # 天氣資訊
-                        thumbnail_image_url = 'https://www.crazybackground.com/wp-content/uploads/2019/12/vector-chinese-clouds.jpg',
-                        title = '天氣資訊',
-                        text = 'Temperature and Humidity',
-                        actions = [
-                            PostbackTemplateAction(
-                                label = '天氣預報',
-                                data='action=天氣預報'
-                            ),
-                            PostbackTemplateAction(
-                                label='天氣雷達與溫度分布',
-                                data='action=天氣雷達與溫度分布'
-                            ),
-                            PostbackTemplateAction(
                                 label = '空氣品質指標',
                                 data='action=空氣品質指標'
+                            ),
+                            PostbackTemplateAction(
+                                label = '未開發',
+                                data='action=NA'
                             ),
                         ]
                     ),
@@ -491,25 +350,6 @@ def sendCarousel(event):  #轉盤樣板
                                 label = '資料來源',
                                 uri='https://toolboxtw.com/zh-TW/detector/gasoline_price'
                             )
-                        ]
-                    ),
-                    CarouselColumn(  # 聯合新聞網
-                        thumbnail_image_url = 'https://udn.com/static/img/logo.svg?2020020601.jpg',
-                        title = '聯合新聞網',
-                        text = '讓你不漏掉任何資訊',
-                        actions = [
-                            URITemplateAction(
-                                label = '新聞網站',
-                                uri='https://udn.com/news/index'
-                            ),
-                            PostbackTemplateAction(
-                                label='及時新聞',
-                                data='action=及時新聞'
-                            ),
-                            PostbackTemplateAction(
-                                label = '熱門新聞',
-                                data='action=熱門新聞'
-                            ),
                         ]
                     ),
  

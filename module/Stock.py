@@ -7,7 +7,7 @@ from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessag
 from io import BytesIO
 import base64
 import pandas as pd
-import datetime
+
 import matplotlib.pyplot as plt
 import requests
 import pyimgur
