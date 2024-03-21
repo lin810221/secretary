@@ -48,14 +48,30 @@ def sendMulti(event, backdata):
     plt.plot(stock_daily[ind[option]], 'r')
     plt.title(stock_json['date'] + "  " + "POW00")
     
-    '圖片上傳至imgur'
-    plt.savefig('send.png')
+    # 保存圖片到 BytesIO 對象中
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    
+    # 將 BytesIO 對象轉換為 base64 編碼
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    
+    # 圖片上傳至imgur
     CLIENT_ID = "fa7ce9e1978a941"
-    PATH = "send.png"
     im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(PATH, title="Uploaded with PyImgur")
-    img_url = uploaded_image.link
-    content = backdata.get('action')
+    
+    # 上傳圖片到 Imgur
+    CLIENT_ID = "fa7ce9e1978a941"
+    headers = {'Authorization': f'Client-ID {CLIENT_ID}'}
+    data = {'image': image_base64}
+    response = requests.post('https://api.imgur.com/3/image', headers=headers, data=data)
+    
+    # 打印上傳的圖片連結
+    if response.status_code == 200:
+        img_url = response.json()['data']['link']
+        print("圖片已上傳至 Imgur:", img_url)
+    else:
+        print("圖片上傳失敗:", response.text)
     
     try:
         message = [
