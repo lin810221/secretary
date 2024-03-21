@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, PostbackEvent
-from module import func, StockTest, Stock, LIFF
+from module import func, Stock, LIFF
 from urllib.parse import parse_qsl
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -41,8 +41,8 @@ def callback(request):
                     elif mtext == "@COVID19":
                         func.Covid19(event)
 
-                    elif (mtext.split(' ')[0] == "股市") and (len(mtext.split(' ')) == 2):
-                        StockTest.sendMulti(event, mtext)
+                    #elif (mtext.split(' ')[0] == "股市") and (len(mtext.split(' ')) == 2):
+                        #StockTest.sendMulti(event, mtext)
 
                     elif mtext == 'B': # 練習
                         func.sendImgCarousel(event)
