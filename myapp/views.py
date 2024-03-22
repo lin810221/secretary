@@ -5,8 +5,11 @@ from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, PostbackEvent
-from module import func, LIFF
+from module import func
+from module import LIFF
+from module import practice
 from urllib.parse import parse_qsl
+
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
@@ -38,17 +41,14 @@ def callback(request):
                     elif mtext == '功能':
                         func.sendQuickreply(event)
                     
-                    elif mtext == "@COVID19":
-                        func.Covid19(event)
-
                     elif mtext == 'B': # 練習
-                        func.sendImgCarousel(event)
+                        practice.sendImgCarousel(event)
 
                     elif mtext == 'C':  # 練習
-                        func.sendImgmap(event)
+                        practice.sendImgmap(event)
     
                     elif mtext == 'D':  # 練習
-                        func.sendDatetime(event)
+                        practice.sendDatetime(event)
 					
                     elif mtext == 'L':
                         LIFF.sendFlex(event)
