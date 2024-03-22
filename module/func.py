@@ -3,17 +3,33 @@ import requests
 import time
 from lxml import etree
 from linebot import LineBotApi
-from linebot.models import (TextSendMessage, ImageSendMessage, StickerSendMessage,
-                            LocationSendMessage, QuickReply, QuickReplyButton, 
-                            MessageAction, TemplateSendMessage, CarouselTemplate,
-                            CarouselColumn, MessageTemplateAction, URITemplateAction,
-                            PostbackTemplateAction, QuickReplyButton, PostbackAction,
-                            CameraAction, CameraRollAction, LocationAction,
-                            ImageCarouselTemplate, ImageCarouselColumn,
-                            ImagemapSendMessage, BaseSize, MessageImagemapAction,
-                            ImagemapArea, URIImagemapAction, ButtonsTemplate,
-                            DatetimePickerTemplateAction
-                            )
+from linebot.models import TextSendMessage # 發送文字訊息
+from linebot.models import ImageSendMessage # 發送圖片訊息
+from linebot.models import StickerSendMessage # 發送貼圖訊息
+from linebot.models import LocationSendMessage # 發送位置訊息
+from linebot.models import QuickReply # 快速回覆功能，用於在訊息中提供快速回覆選項
+from linebot.models import QuickReplyButton # 快速回覆按鈕，用於快速回覆中的選項
+from linebot.models import MessageAction # 訊息動作，用於快速回覆按鈕中的動作
+from linebot.models import TemplateSendMessage # 模板訊息，用於發送包含樣式化內容的訊息
+from linebot.models import CarouselTemplate # 輪播模板，用於在訊息中顯示多個選項，可以左右滑動
+from linebot.models import CarouselColumn # 輪播模板中的一列
+from linebot.models import MessageTemplateAction # 模板訊息中的訊息動作
+from linebot.models import URITemplateAction # 模板訊息中的URI動作，用於開啟網頁
+from linebot.models import PostbackTemplateAction # 用於模板訊息中，可用於按鈕模板等場景
+from linebot.models import PostbackAction # 模板訊息中的Postback動作，用於觸發後端處理
+from linebot.models import CameraAction # 相機動作，用於啟動用戶端相機
+from linebot.models import CameraRollAction # 相機捲動動作，用於啟動用戶端相機捲動功能
+from linebot.models import LocationAction # 位置動作，用於在地圖中選擇位置
+from linebot.models import ImageCarouselTemplate # 圖片輪播模板，與輪播模板類似，但是每個選項都是圖片
+from linebot.models import ImageCarouselColumn # 圖片輪播模板中的一列
+from linebot.models import ImagemapSendMessage # 圖像地圖訊息，用於發送包含可點擊區域的圖像
+from linebot.models import BaseSize # 圖像地圖區域的基本大小
+from linebot.models import MessageImagemapAction # 圖像地圖動作，用於在圖像地圖中觸發訊息動作
+from linebot.models import ImagemapArea # 圖像地圖區域，用於定義可點擊區域
+from linebot.models import URIImagemapAction # 圖像地圖動作，用於在圖像地圖中開啟URI
+from linebot.models import ButtonsTemplate # 按鈕模板，用於在訊息中顯示包含按鈕的樣式化內容
+from linebot.models import DatetimePickerTemplateAction # 日期時間選擇器模板動作，用於在按鈕模板中提供日期時間選擇功能
+                            
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 
