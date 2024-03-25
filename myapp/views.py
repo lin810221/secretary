@@ -8,6 +8,7 @@ from linebot.models import MessageEvent, TextMessage, PostbackEvent
 from module import func
 from module import LIFF
 from module import practice
+from module import environment
 from urllib.parse import parse_qsl
 
 
@@ -30,7 +31,7 @@ def callback(request):
             if isinstance(event, MessageEvent):
                 # 處理位置
                 if event.message.type == 'location':
-                    func.AQI(event)
+                    environment.AQI(event)
                 
                 # 處理文字訊息
                 if isinstance(event.message, TextMessage):
@@ -69,10 +70,10 @@ def callback(request):
                     func.sendData_sell(event, backdata)
 
                 elif backdata.get('action') == '即時水情':
-                    func.Waters(event)
+                    environment.Waters(event)
                 
                 elif backdata.get('action') == '空氣品質指標':
-                    func.AQI_char(event)
+                    environment.AQI_char(event)
 
                 elif backdata.get('action') == '國際原油價格':
                     func.NationalOil(event)
