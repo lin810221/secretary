@@ -57,8 +57,8 @@ def sendCarousel(event):  #轉盤樣板
                                 data='action=空氣品質指標'
                             ),
                             PostbackTemplateAction(
-                                label = '未開發',
-                                data='action=NA'
+                                label = '匯率',
+                                data='action=匯率'
                             ),
                         ]
                     ),

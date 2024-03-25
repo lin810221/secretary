@@ -11,6 +11,7 @@ from module import LIFF
 from module import practice
 from module import environment
 from module import market_price
+from module import stock
 
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -78,6 +79,9 @@ def callback(request):
 
                 elif backdata.get('action') == '國際原油價格':
                     market_price.national_oil(event)
+                
+                elif backdata.get('action') == '匯率':
+                    stock.exchange_rate(event)
 
     
         return HttpResponse()
