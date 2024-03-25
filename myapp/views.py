@@ -5,11 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, PostbackEvent
+from urllib.parse import parse_qsl
 from module import func
 from module import LIFF
 from module import practice
 from module import environment
-from urllib.parse import parse_qsl
+from module import market_price
 
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -70,13 +71,13 @@ def callback(request):
                     func.sendData_sell(event, backdata)
 
                 elif backdata.get('action') == '即時水情':
-                    environment.Waters(event)
+                    environment.waters(event)
                 
                 elif backdata.get('action') == '空氣品質指標':
                     environment.AQI_char(event)
 
                 elif backdata.get('action') == '國際原油價格':
-                    func.NationalOil(event)
+                    market_price.national_oil(event)
 
     
         return HttpResponse()

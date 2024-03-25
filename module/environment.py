@@ -8,7 +8,7 @@ from linebot.models import ImageSendMessage
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 
 " 水庫即時水情 "
-def Waters(event): 
+def waters(event): 
     url = 'https://www.taiwanstat.com/waters/latest'
     response = requests.get(url)
     data = response.json()
