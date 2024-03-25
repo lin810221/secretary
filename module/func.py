@@ -137,6 +137,10 @@ def sendCarousel(event):  #轉盤樣板
                                 label = '未開發',
                                 data='action=NA'
                             ),
+                            PostbackTemplateAction(
+                                label = '未開發',
+                                data='action=NA'
+                            ),
                         ]
                     ),
                     CarouselColumn(  # 油價資訊
@@ -155,7 +159,11 @@ def sendCarousel(event):  #轉盤樣板
                             URITemplateAction(
                                 label = '資料來源',
                                 uri='https://toolboxtw.com/zh-TW/detector/gasoline_price'
-                            )
+                            ),
+                            PostbackTemplateAction(
+                                label = '未開發',
+                                data='action=NA'
+                            ),
                         ]
                     ),
  
