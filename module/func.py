@@ -1,7 +1,4 @@
 from django.conf import settings
-import requests
-import time
-from lxml import etree
 from linebot import LineBotApi
 from linebot.models import TextSendMessage                  # 發送文字訊息
 from linebot.models import ImageSendMessage                 # 發送圖片訊息
@@ -42,6 +39,26 @@ def sendCarousel(event):  #轉盤樣板
             alt_text='轉盤起動囉',
             template=CarouselTemplate(
                 columns=[
+                    # 天氣資訊
+                    CarouselColumn(  
+                        thumbnail_image_url = 'https://www.crazybackground.com/wp-content/uploads/2019/12/vector-chinese-clouds.jpg',
+                        title = '天氣資訊',
+                        text = 'Temperature and Humidity',
+                        actions = [
+                            PostbackTemplateAction(
+                                label = '溫度分布圖',
+                                data='action=溫度分布圖'
+                            ),
+                            PostbackTemplateAction(
+                                label='累積雨量',
+                                data='action=累積雨量'
+                            ),
+                            PostbackTemplateAction(
+                                label = '紫外線觀測',
+                                data='action=紫外線觀測'
+                            ),
+                        ]
+                    ),
                     # 台灣水庫即時水情
                     CarouselColumn(  
                         thumbnail_image_url = 'https://static.vecteezy.com/system/resources/previews/000/119/586/original/free-effervescent-background-vector.jpg',

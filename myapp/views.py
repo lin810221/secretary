@@ -70,6 +70,17 @@ def callback(request):
                 
                 elif backdata.get('action') == 'sell':
                     func.sendData_sell(event, backdata)
+                
+                elif backdata.get('action') == '溫度分布圖':
+                    environment.tempw(event)
+
+                elif backdata.get('action') == '累積雨量':
+                    environment.rainfall(event)
+                
+                elif backdata.get('action') == '紫外線觀測':
+                    environment.UVI(event)
+
+
 
                 elif backdata.get('action') == '即時水情':
                     environment.waters(event)

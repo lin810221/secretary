@@ -1,11 +1,20 @@
 from django.conf import settings
 import requests
 import time
+from datetime import datetime
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from linebot.models import ImageSendMessage
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
+
+def send_message(event, message):
+    try:
+        line_bot_api.reply_message(event.reply_token, message)
+    except:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='發生錯誤！'))
+
+
 
 " 水庫即時水情 "
 def waters(event): 
@@ -45,6 +54,64 @@ def AQI_char(event):
         line_bot_api.reply_message(event.reply_token,message)
     except:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
+
+
+" 溫度分布圖 "
+def tempw(event):
+    img_url = 'https://www.cwa.gov.tw/Data/temperature/tempw.jpg'
+    text = '溫度分布圖'
+    message = [TextSendMessage(text),
+               ImageSendMessage(original_content_url = img_url, preview_image_url = img_url)]
+    send_message(event, message)
+
+" 累積雨量 "
+def rainfall(event):
+    date = time.strftime("%Y-%m-%d")
+    hour = time.strftime("%H")
+    rainfall_url = f'https://www.cwa.gov.tw/Data/rainfall/{date}_{hour}00.QZJ8.jpg'
+    message = [
+            TextSendMessage('累積雨量'),
+            ImageSendMessage(original_content_url = rainfall_url, preview_image_url = rainfall_url)
+            ]
+    send_message(event, message)
+
+" 紫外線觀測 "
+def UVI(event):
+    # 即時觀測
+    real_time_url = 'https://www.cwa.gov.tw/Data/UVI/UVI_CWB.png'
+    
+    # 今日最大值
+    maximum_value_url = 'https://www.cwa.gov.tw/Data/UVI/UVI_Max_CWB.png'
+    
+    message = [
+            TextSendMessage('即時觀測'),
+            ImageSendMessage(original_content_url = real_time_url, preview_image_url = real_time_url),
+            TextSendMessage('今日最大值'),
+            ImageSendMessage(original_content_url = maximum_value_url, preview_image_url = maximum_value_url)
+            ]
+    send_message(event, message)
+
+
+
+" 雷達回波 "
+def obs_radar(event):
+    radar_url = 'https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=rdec-key-123-45678-011121314&format=JSON'
+    radar = requests.get(radar_url)        # 爬取資料
+    radar_json = radar.json()              # 使用 JSON 格式
+    radar_img = radar_json['cwaopendata']['dataset']['resource']['ProductURL']  # 取得圖片網址
+    rader_des = radar_json['cwaopendata']['dataset']['resource']['resourceDesc']
+    rader_date = radar_json['cwaopendata']['sent']
+    rader_date = datetime.fromisoformat(rader_date).strftime('%Y-%m-%d %H:%M:%S')
+
+    try:
+        message = [
+            TextSendMessage(f'{rader_des}\n{rader_date}'),
+            ImageSendMessage(original_content_url = radar_img, preview_image_url = radar_img),
+            ]
+        line_bot_api.reply_message(event.reply_token,message)
+    except:
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='發生錯誤！'))
+
 
 " 空氣品質指標 "
 def AQI(event):       
