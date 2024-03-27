@@ -91,8 +91,6 @@ def UVI(event):
             ]
     send_message(event, message)
 
-
-
 " 雷達回波 "
 def obs_radar(event):
     radar_url = 'https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=rdec-key-123-45678-011121314&format=JSON'

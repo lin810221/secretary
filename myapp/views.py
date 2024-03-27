@@ -79,8 +79,9 @@ def callback(request):
                 
                 elif backdata.get('action') == '紫外線觀測':
                     environment.UVI(event)
-
-
+                    
+                elif backdata.get('action') == '雷達回波':
+                    environment.obs_radar(event)
 
                 elif backdata.get('action') == '即時水情':
                     environment.waters(event)

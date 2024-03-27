@@ -74,8 +74,8 @@ def sendCarousel(event):  #轉盤樣板
                                 data='action=空氣品質指標'
                             ),
                             PostbackTemplateAction(
-                                label = '匯率',
-                                data='action=匯率'
+                                label = '雷達回波',
+                                data='action=雷達回波'
                             ),
                         ]
                     ),
@@ -90,8 +90,8 @@ def sendCarousel(event):  #轉盤樣板
                                 data='action=國際原油價格'
                             ),
                             PostbackTemplateAction(
-                                label = '中油油價歷史資訊',
-                                data='action=中油油價歷史資訊'
+                                label = '匯率',
+                                data='action=匯率'
                             ),
                             URITemplateAction(
                                 label = '資料來源',
